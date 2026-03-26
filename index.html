@@ -10,7 +10,7 @@
         body { font-family: 'Quicksand', sans-serif; background: #f0f9ff; overflow-x: hidden; }
         h1, h2, h3, .font-kids { font-family: 'Fredoka One', cursive; }
         
-        /* Contenedor del Robot */
+        /* Contenedor del Robot Flotante */
         #robot-container {
             position: fixed;
             width: 60px; 
@@ -21,31 +21,33 @@
             filter: drop-shadow(0 5px 4px rgba(0,0,0,0.1));
         }
 
-        .floating {
-            animation: float 3s ease-in-out infinite;
+        /* Animaciones del Robot */
+        .floating { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        .blink { animation: blink-eye 0.15s ease-in-out infinite; }
+        @keyframes blink-eye { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
+        .talking-mouth { animation: talk 0.2s ease-in-out infinite; }
+        @keyframes talk { 0%, 100% { height: 3px; } 50% { height: 10px; } }
+
+        /* Animación de Baile Profesional del Robot Policía */
+        .robot-dance-pro { 
+            animation: professionalDance 1s ease-in-out infinite alternate;
+            transform-origin: bottom center;
+        }
+        @keyframes professionalDance {
+            0% { transform: scale(1) rotate(-3deg) translateY(0); }
+            50% { transform: scale(1.05) rotate(0deg) translateY(-15px); }
+            100% { transform: scale(1) rotate(3deg) translateY(0); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); } 
+        /* Destellos de Victoria */
+        .victory-glow {
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(191,219,254,0.5) 50%, rgba(240,249,255,0) 100%);
+            animation: pulse-glow 2s ease-in-out infinite;
         }
-
-        .blink {
-            animation: blink-eye 0.15s ease-in-out infinite;
-        }
-
-        @keyframes blink-eye {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.1); }
-        }
-
-        .talking-mouth {
-            animation: talk 0.2s ease-in-out infinite;
-        }
-
-        @keyframes talk {
-            0%, 100% { height: 3px; }
-            50% { height: 10px; }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
         /* Estilos de Tarjetas */
@@ -98,11 +100,26 @@
             font-family: 'Fredoka One', cursive;
             line-height: 1.1;
         }
+
+        /* Partículas / Confeti Simple */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 2px;
+            animation: confetti-fall 3s linear infinite;
+            z-index: 5;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
 
-    <!-- FOOTPRINTS BOT -->
+    <!-- FOOTPRINTS BOT (Puntero) -->
     <div id="robot-container" class="floating no-print">
         <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
             <line x1="50" y1="20" x2="50" y2="10" stroke="#2D3748" stroke-width="2" />
@@ -112,8 +129,6 @@
             <circle id="eye-l" cx="40" cy="45" r="4" fill="#63B3ED" />
             <circle id="eye-r" cx="60" cy="45" r="4" fill="#63B3ED" />
             <rect id="robot-mouth" x="40" y="55" width="20" height="3" rx="1.5" fill="#63B3ED" />
-            <rect x="12" y="45" width="8" height="25" rx="4" fill="#CBD5E0" />
-            <rect x="80" y="45" width="8" height="25" rx="4" fill="#CBD5E0" />
         </svg>
     </div>
 
@@ -184,6 +199,79 @@
         </div>
     </div>
 
+    <!-- Pantalla de Celebración del Robot Policía -->
+    <div id="screen-victory" class="hidden flex-col items-center justify-center text-center max-w-4xl w-full mt-10 relative">
+        <!-- Luces de Fondo -->
+        <div class="absolute inset-0 victory-glow -z-10 rounded-full blur-3xl"></div>
+        
+        <div id="confetti-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+        <div id="police-robot-body" class="w-64 h-80 mb-8 relative robot-dance-pro filter drop-shadow-2xl">
+            <!-- SVG del Robot Cuerpo Completo -->
+            <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+                <!-- Gorra de Policía con Detalle -->
+                <path d="M55 50 Q100 15 145 50 L145 68 Q100 55 55 68 Z" fill="#1e3a8a" />
+                <path d="M50 63 Q100 55 150 63 L152 75 Q100 65 48 75 Z" fill="#111827" />
+                <circle cx="100" cy="45" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
+                <path d="M100 38 L103 44 L109 45 L104 49 L106 55 L100 52 L94 55 L96 49 L91 45 L97 44 Z" fill="white" />
+
+                <!-- Cabeza Metálica -->
+                <defs>
+                    <linearGradient id="robotMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#cbd5e1;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect x="60" y="68" width="80" height="75" rx="18" fill="url(#robotMetal)" stroke="#94a3b8" stroke-width="3" />
+                
+                <!-- Cara Digital -->
+                <rect x="70" y="80" width="60" height="45" rx="10" fill="#0f172a" />
+                <circle id="eye-v-l" cx="85" cy="98" r="6" fill="#60a5fa" class="blink">
+                    <animate attributeName="r" values="5;7;5" dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <circle id="eye-v-r" cx="115" cy="98" r="6" fill="#60a5fa" class="blink">
+                    <animate attributeName="r" values="5;7;5" dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <!-- Boca de Audio -->
+                <rect id="robot-mouth-v" x="85" y="112" width="30" height="4" rx="2" fill="#60a5fa" />
+
+                <!-- Cuerpo de Uniforme -->
+                <rect x="62" y="143" width="76" height="85" rx="12" fill="#1e40af" stroke="#1e3a8a" stroke-width="2" />
+                <rect x="105" y="155" width="20" height="25" fill="#fbbf24" rx="3" stroke="#d97706" stroke-width="2" />
+                <path d="M115 160 L117 165 L122 165 L118 168 L120 173 L115 170 L110 173 L112 168 L108 165 L113 165 Z" fill="#d97706" />
+
+                <!-- Brazos -->
+                <rect x="35" y="150" width="27" height="15" rx="5" fill="#94a3b8" transform="rotate(-15 35 150)" />
+                <rect x="138" y="150" width="27" height="15" rx="5" fill="#94a3b8" transform="rotate(15 138 150)" />
+                
+                <!-- Cinturón -->
+                <rect x="62" y="200" width="76" height="12" fill="#0f172a" />
+                
+                <!-- Piernas -->
+                <rect x="72" y="228" width="22" height="35" rx="6" fill="#1e3a8a" />
+                <rect x="106" y="228" width="22" height="35" rx="6" fill="#1e3a8a" />
+                <rect x="70" y="255" width="26" height="10" rx="5" fill="#0f172a" />
+                <rect x="104" y="255" width="26" height="10" rx="5" fill="#0f172a" />
+            </svg>
+        </div>
+
+        <div class="relative z-10 space-y-4">
+            <h2 class="text-6xl text-blue-800 mb-2 font-kids drop-shadow-md">IMPRESIONANTE!</h2>
+            <p class="text-3xl text-blue-600 font-bold" id="victory-badge-title">OFFICER ON DECK</p>
+            <p class="text-xl text-gray-700 max-w-lg mx-auto leading-relaxed" id="victory-text">
+                Calculating your heroic performance...
+            </p>
+            
+            <div class="flex justify-center py-6">
+                <button onclick="showFinalCertificate()" class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold text-3xl px-16 py-6 rounded-2xl shadow-[0_10px_0_rgb(217,119,6)] transform active:translate-y-2 active:shadow-none transition-all duration-150 group">
+                    <span class="flex items-center gap-3">
+                        GET YOUR DIPLOMA! 🏆
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Pantalla de Certificado -->
     <div id="screen-cert" class="hidden max-w-4xl w-full bg-white p-10 rounded-3xl shadow-2xl border-[12px] border-yellow-400 relative overflow-hidden mt-6">
         <div class="text-center relative z-10">
@@ -204,8 +292,10 @@
                     <span class="text-sm"><strong>EXEMPLARY<br>CITIZEN</strong></span>
                 </div>
             </div>
-            <button onclick="window.print()" class="no-print bg-blue-600 text-white px-8 py-3 rounded-xl mr-4">Print Diploma</button>
-            <button onclick="location.reload()" class="no-print bg-gray-200 text-gray-700 px-8 py-3 rounded-xl">Play Again</button>
+            <div class="flex justify-center gap-4 no-print">
+                <button onclick="window.print()" class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition shadow-lg">Print Diploma</button>
+                <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-xl hover:bg-gray-300 transition">Play Again</button>
+            </div>
         </div>
     </div>
 
@@ -217,12 +307,14 @@
     <script>
         const robot = document.getElementById('robot-container');
         const mouth = document.getElementById('robot-mouth');
-        const eyes = [document.getElementById('eye-l'), document.getElementById('eye-r')];
+        const mouthV = document.getElementById('robot-mouth-v');
+        const eyes = [document.getElementById('eye-l'), document.getElementById('eye-r'), document.getElementById('eye-v-l'), document.getElementById('eye-v-r')];
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let robotX = mouseX;
         let robotY = mouseY;
         let hasEncouraged = false;
+        let finalGrade = 0;
 
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
@@ -239,9 +331,9 @@
         updateRobotPosition();
 
         function triggerBlink() {
-            eyes.forEach(eye => eye.classList.add('blink'));
+            eyes.forEach(eye => { if(eye) eye.classList.add('blink'); });
             setTimeout(() => {
-                eyes.forEach(eye => eye.classList.remove('blink'));
+                eyes.forEach(eye => { if(eye) eye.classList.remove('blink'); });
                 setTimeout(triggerBlink, 4000 + Math.random() * 2000);
             }, 150);
         }
@@ -250,8 +342,10 @@
         function setTalking(isSpeaking) {
             if (isSpeaking) {
                 mouth.classList.add('talking-mouth');
+                if(mouthV) mouthV.classList.add('talking-mouth');
             } else {
                 mouth.classList.remove('talking-mouth');
+                if(mouthV) mouthV.classList.remove('talking-mouth');
             }
         }
 
@@ -261,7 +355,7 @@
                 const msg = new SpeechSynthesisUtterance();
                 msg.text = text;
                 msg.lang = 'en-US';
-                msg.rate = 0.95; 
+                msg.rate = 1.0; 
                 msg.onstart = () => setTalking(true);
                 msg.onend = () => {
                     setTalking(false);
@@ -271,11 +365,9 @@
             }
         }
 
-        // Función solo para alentar al estudiante a aprender lo máximo posible
         function encouragePlayer() {
             if (hasEncouraged) return;
             hasEncouraged = true;
-            // Solo aliento y motivación, sin explicación del tema
             const introText = "Hello there! You are about to embark on an amazing adventure! I want you to give it your absolute best and learn everything you can today. You are incredibly smart and I know you can become the best Guardian this community has ever seen! Believe in yourself and let's aim for the top score! Type your hero name to begin!";
             speak(introText);
         }
@@ -410,10 +502,51 @@
             }, 1800);
         }
 
+        // --- SOLUCIÓN AL ERROR: IMPLEMENTACIÓN DE processResults ---
         function processResults() {
-            const grade = Math.round((score / (quizData.length * 10)) * 100);
-            if (grade >= 80) showCertificate(grade);
-            else showRetryScreen(grade);
+            // Calcula la nota sobre 100 (6 preguntas, cada una vale aprox 16.66)
+            finalGrade = Math.round((score / (quizData.length * 10)) * 100);
+            
+            if (finalGrade >= 70) {
+                triggerVictory();
+            } else {
+                showRetryScreen(finalGrade);
+            }
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#3b82f6', '#fbbf24', '#22c55e', '#ef4444', '#a855f7'];
+            for(let i=0; i<50; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + '%';
+                c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                c.style.animationDelay = Math.random() * 3 + 's';
+                c.style.width = (Math.random() * 10 + 5) + 'px';
+                c.style.height = c.style.width;
+                container.appendChild(c);
+            }
+        }
+
+        function triggerVictory() {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-victory').classList.remove('hidden');
+            robot.classList.add('hidden'); 
+            createConfetti();
+            
+            speak("WOHOOO! Look at you! You did it, " + playerName + "! You are an absolute superstar! I've put on my special officer uniform just to celebrate your victory! You passed with " + finalGrade + " points! You are now a true Guardian of the community! Stand tall, you are a champion!", () => {
+                document.getElementById('victory-text').innerText = "Officer " + playerName + ", your official Badge and Diploma are waiting for you. Excellent work!";
+            });
+        }
+
+        function showFinalCertificate() {
+            document.getElementById('screen-victory').classList.add('hidden');
+            document.getElementById('screen-cert').classList.remove('hidden');
+            document.getElementById('cert-name').innerText = playerName;
+            document.getElementById('cert-grade').innerText = `${finalGrade}/100`;
+            document.getElementById('cert-grade').className = "text-6xl font-kids text-green-600";
+            speak("Magnificent! Here is your official diploma. You are now a community hero!");
         }
 
         function showRetryScreen(grade) {
@@ -430,15 +563,6 @@
                 renderCards(); 
                 document.getElementById('btn-ready').classList.add('hidden');
             }, 6000);
-        }
-
-        function showCertificate(grade) {
-            document.getElementById('screen-game').classList.add('hidden');
-            document.getElementById('screen-cert').classList.remove('hidden');
-            document.getElementById('cert-name').innerText = playerName;
-            document.getElementById('cert-grade').innerText = `${grade}/100`;
-            document.getElementById('cert-grade').className = "text-6xl font-kids text-green-600";
-            speak("Magnificent! " + playerName + ", you gave your absolute best and now you are an official Exemplary Citizen. I am so proud of you!");
         }
     </script>
 </body>
